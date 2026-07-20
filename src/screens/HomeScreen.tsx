@@ -1,19 +1,22 @@
 /**
- * Authenticated landing screen.
+ * Home dashboard (the "Home" tab).
  *
- * Displays the user's Digital Tourist ID and profile, and provides logout.
- * Future modules (live tracking, SOS, safety score) will surface their entry
- * points from here.
+ * A clean overview: greeting, Digital Tourist ID, live Safety Score, and
+ * profile. Feature navigation lives in the bottom tab bar and the More menu,
+ * so this screen stays uncluttered.
  */
 import React from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-import Button from '../components/ui/Button';
 import { useAuthStore } from '../store/authStore';
+import { useSafetyScore } from '../features/safety/hooks/useSafetyScore';
+import ScoreBadge from '../features/safety/components/ScoreBadge';
+import { useTranslation } from '../i18n/useTranslation';
 import type { AppStackParamList } from '../navigation/types';
 
-type Props = NativeStackScreenProps<AppStackParamList, 'Home'>;
+type Nav = NativeStackNavigationProp<AppStackParamList>;
 
 function InfoRow({ label, value }: { label: string; value: string }) {
   return (
@@ -24,9 +27,11 @@ function InfoRow({ label, value }: { label: string; value: string }) {
   );
 }
 
-export default function HomeScreen({ navigation }: Props) {
+export default function HomeScreen() {
+  const navigation = useNavigation<Nav>();
   const user = useAuthStore((s) => s.user);
-  const logout = useAuthStore((s) => s.logout);
+  const score = useSafetyScore();
+  const { t } = useTranslation();
 
   if (!user) {
     return null;
@@ -36,15 +41,15 @@ export default function HomeScreen({ navigation }: Props) {
     <ScrollView className="flex-1 bg-slate-50" contentContainerClassName="p-4 gap-4">
       <View className="mt-1">
         <Text className="text-2xl font-bold text-slate-900">
-          Hi, {user.fullName.split(' ')[0]} 👋
+          {t('home.greeting', { name: user.fullName.split(' ')[0] })} 👋
         </Text>
-        <Text className="mt-1 text-slate-500">Stay safe on your travels.</Text>
+        <Text className="mt-1 text-slate-500">{t('home.subtitle')}</Text>
       </View>
 
       {/* Digital Tourist ID */}
       <View className="rounded-2xl bg-indigo-600 p-5">
         <Text className="text-xs font-semibold uppercase tracking-widest text-indigo-200">
-          Digital Tourist ID
+          {t('home.touristId')}
         </Text>
         <Text className="mt-1 text-3xl font-bold tracking-widest text-white">
           {user.touristId}
@@ -53,38 +58,19 @@ export default function HomeScreen({ navigation }: Props) {
         <Text className="text-indigo-100">{user.nationality}</Text>
       </View>
 
-      {/* Profile */}
-      <View className="rounded-2xl bg-white p-5">
-        <Text className="mb-2 text-base font-bold text-slate-900">Profile</Text>
-        <InfoRow label="Email" value={user.email} />
-        <InfoRow label="Phone" value={user.phone} />
-        <InfoRow label="Emergency contact" value={user.emergencyContact.name} />
-        <InfoRow label="Emergency phone" value={user.emergencyContact.phone} />
-      </View>
-
-      {/* Safety features */}
-      <View className="gap-3 rounded-2xl bg-white p-5">
-        <Text className="text-base font-bold text-slate-900">Safety</Text>
-        <Button label="Live location tracking" onPress={() => navigation.navigate('Tracking')} />
-        <Button
-          label="Safety zones (geo-fencing)"
-          variant="secondary"
-          onPress={() => navigation.navigate('Geofencing')}
-        />
-      </View>
-
-      {/* Emergency */}
+      {/* Safety score */}
       <Pressable
         accessibilityRole="button"
-        onPress={() => navigation.navigate('Sos')}
-        className="flex-row items-center justify-center rounded-2xl bg-red-600 p-5 active:bg-red-700"
+        onPress={() => navigation.navigate('SafetyScore')}
+        className="flex-row items-center justify-between rounded-2xl bg-white p-5 active:opacity-80"
       >
-        <Text className="text-lg font-bold text-white">🆘  Emergency SOS</Text>
+        <View>
+          <Text className="text-base font-bold text-slate-900">{t('home.safetyScore')}</Text>
+          <Text className="text-sm text-slate-500">{t('home.tapBreakdown')}</Text>
+        </View>
+        <ScoreBadge value={score.value} band={score.band} />
       </Pressable>
 
-      <View className="mt-2">
-        <Button label="Log out" variant="secondary" onPress={() => logout()} />
-      </View>
     </ScrollView>
   );
 }

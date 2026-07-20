@@ -10,6 +10,7 @@
  */
 import { create } from './createStore';
 import { useAuthStore } from './authStore';
+import { useContactsStore } from './contactsStore';
 import { useLocationStore } from './locationStore';
 import { locationService } from '../features/tracking/services/locationService';
 import { sosReportService } from '../features/sos/services/sosReportService';
@@ -57,7 +58,20 @@ async function resolveLocation(): Promise<Coordinates | null> {
   }
 }
 
-export const useSosStore = create<SosState>((set, get) => ({
+/** Prefers the primary managed contact; falls back to the Tourist ID contact. */
+function resolveEmergencyContact(): { name: string; phone: string } | null {
+  const primary = useContactsStore.getState().getPrimary();
+  if (primary) {
+    return { name: primary.name, phone: primary.phone };
+  }
+  const user = useAuthStore.getState().user;
+  if (user?.emergencyContact.name && user.emergencyContact.phone) {
+    return { name: user.emergencyContact.name, phone: user.emergencyContact.phone };
+  }
+  return null;
+}
+
+export const useSosStore = create<SosState>((set) => ({
   status: 'idle',
   lastEvent: null,
   history: [],
@@ -70,6 +84,12 @@ export const useSosStore = create<SosState>((set, get) => ({
       return;
     }
 
+    const contact = resolveEmergencyContact();
+    if (!contact) {
+      set({ status: 'error', error: 'Add an emergency contact before sending an SOS.' });
+      return;
+    }
+
     set({ status: 'sending', error: null });
     try {
       const coordinates = await resolveLocation();
@@ -77,14 +97,14 @@ export const useSosStore = create<SosState>((set, get) => ({
         id: randomId(),
         timestamp: Date.now(),
         coordinates,
-        contactName: user.emergencyContact.name,
+        contactName: contact.name,
       };
 
       // Log first so the record exists even if the user cancels the SMS.
       await sosReportService.report(event);
 
       const message = buildSosMessage(user.fullName, user.touristId, coordinates);
-      await openSmsComposer(user.emergencyContact.phone, message);
+      await openSmsComposer(contact.phone, message);
 
       set((s) => ({
         status: 'sent',
@@ -97,9 +117,9 @@ export const useSosStore = create<SosState>((set, get) => ({
   },
 
   async callEmergencyContact() {
-    const user = useAuthStore.getState().user;
-    if (user?.emergencyContact.phone) {
-      await callNumber(user.emergencyContact.phone);
+    const contact = resolveEmergencyContact();
+    if (contact) {
+      await callNumber(contact.phone);
     }
   },
 

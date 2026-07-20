@@ -41,4 +41,8 @@ export const StorageKeys = {
   mockUsers: 'auth/mock_users',
   // SOS event history (used by the mock SOS report service).
   sosHistory: 'sos/history',
+  // Emergency contacts list.
+  emergencyContacts: 'contacts/list',
+  // Travel documents uploaded by the traveller.
+  travelDocuments: 'documents/list',
 } as const;

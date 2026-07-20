@@ -9,8 +9,16 @@ export type AuthStackParamList = {
 };
 
 export type AppStackParamList = {
-  Home: undefined;
-  Tracking: undefined;
-  Geofencing: undefined;
-  Sos: undefined;
+  /** The bottom-tab shell (Home / Track / SOS / Zones / More). */
+  Main: undefined;
+  // Detail screens pushed on top of the tabs:
+  SafetyScore: undefined;
+  Behavior: undefined;
+  Contacts: undefined;
+  ContactForm: { id?: string };
+  Language: undefined;
+  Profile: undefined;
+  Notifications: undefined;
+  TravelDocuments: undefined;
+  TripTools: undefined;
 };
