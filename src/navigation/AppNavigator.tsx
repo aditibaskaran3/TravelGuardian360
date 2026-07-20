@@ -8,6 +8,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import HomeScreen from '../screens/HomeScreen';
 import TrackingScreen from '../features/tracking/screens/TrackingScreen';
 import GeofencingScreen from '../features/geofencing/screens/GeofencingScreen';
+import SosScreen from '../features/sos/screens/SosScreen';
 import { useGeofenceMonitor } from '../features/geofencing/hooks/useGeofenceMonitor';
 import type { AppStackParamList } from './types';
 
@@ -33,6 +34,11 @@ export default function AppNavigator() {
         name="Geofencing"
         component={GeofencingScreen}
         options={{ title: 'Safety Zones' }}
+      />
+      <Stack.Screen
+        name="Sos"
+        component={SosScreen}
+        options={{ title: 'Emergency SOS' }}
       />
     </Stack.Navigator>
   );

@@ -36,3 +36,11 @@ export const MOCK_START_COORDINATES = { latitude: 28.6139, longitude: 77.209 }; 
 // Zones come from the mock provider (static, on-device) until the backend
 // exposes them. Flip to false + implement the real endpoint to use live zones.
 export const USE_MOCK_GEOFENCE = true;
+
+// --- Emergency / SOS ------------------------------------------------------
+// National emergency number used by the SOS "Call emergency" action.
+// India: 112. Change per deployment region.
+export const EMERGENCY_NUMBER = '112';
+
+// SOS events are logged locally (mock) until the backend exposes /sos.
+export const USE_MOCK_SOS = true;

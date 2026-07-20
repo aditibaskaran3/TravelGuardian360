@@ -39,4 +39,6 @@ export const StorageKeys = {
   authUser: 'auth/user',
   // Mock-only: the local "users database" the mock auth service reads/writes.
   mockUsers: 'auth/mock_users',
+  // SOS event history (used by the mock SOS report service).
+  sosHistory: 'sos/history',
 } as const;

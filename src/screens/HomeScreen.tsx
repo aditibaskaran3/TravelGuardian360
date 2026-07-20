@@ -6,7 +6,7 @@
  * points from here.
  */
 import React from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { Pressable, ScrollView, Text, View } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import Button from '../components/ui/Button';
@@ -72,6 +72,15 @@ export default function HomeScreen({ navigation }: Props) {
           onPress={() => navigation.navigate('Geofencing')}
         />
       </View>
+
+      {/* Emergency */}
+      <Pressable
+        accessibilityRole="button"
+        onPress={() => navigation.navigate('Sos')}
+        className="flex-row items-center justify-center rounded-2xl bg-red-600 p-5 active:bg-red-700"
+      >
+        <Text className="text-lg font-bold text-white">🆘  Emergency SOS</Text>
+      </Pressable>
 
       <View className="mt-2">
         <Button label="Log out" variant="secondary" onPress={() => logout()} />

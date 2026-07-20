@@ -12,4 +12,5 @@ export type AppStackParamList = {
   Home: undefined;
   Tracking: undefined;
   Geofencing: undefined;
+  Sos: undefined;
 };
