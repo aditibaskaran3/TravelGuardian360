@@ -7,11 +7,16 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import HomeScreen from '../screens/HomeScreen';
 import TrackingScreen from '../features/tracking/screens/TrackingScreen';
+import GeofencingScreen from '../features/geofencing/screens/GeofencingScreen';
+import { useGeofenceMonitor } from '../features/geofencing/hooks/useGeofenceMonitor';
 import type { AppStackParamList } from './types';
 
 const Stack = createNativeStackNavigator<AppStackParamList>();
 
 export default function AppNavigator() {
+  // Runs zone monitoring + entry alerts for the whole authenticated session.
+  useGeofenceMonitor();
+
   return (
     <Stack.Navigator>
       <Stack.Screen
@@ -23,6 +28,11 @@ export default function AppNavigator() {
         name="Tracking"
         component={TrackingScreen}
         options={{ title: 'Live Tracking' }}
+      />
+      <Stack.Screen
+        name="Geofencing"
+        component={GeofencingScreen}
+        options={{ title: 'Safety Zones' }}
       />
     </Stack.Navigator>
   );

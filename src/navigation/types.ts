@@ -11,4 +11,5 @@ export type AuthStackParamList = {
 export type AppStackParamList = {
   Home: undefined;
   Tracking: undefined;
+  Geofencing: undefined;
 };

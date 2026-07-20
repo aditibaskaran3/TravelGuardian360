@@ -63,9 +63,14 @@ export default function HomeScreen({ navigation }: Props) {
       </View>
 
       {/* Safety features */}
-      <View className="rounded-2xl bg-white p-5">
-        <Text className="mb-3 text-base font-bold text-slate-900">Safety</Text>
+      <View className="gap-3 rounded-2xl bg-white p-5">
+        <Text className="text-base font-bold text-slate-900">Safety</Text>
         <Button label="Live location tracking" onPress={() => navigation.navigate('Tracking')} />
+        <Button
+          label="Safety zones (geo-fencing)"
+          variant="secondary"
+          onPress={() => navigation.navigate('Geofencing')}
+        />
       </View>
 
       <View className="mt-2">

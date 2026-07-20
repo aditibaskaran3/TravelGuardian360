@@ -31,3 +31,8 @@ export const LOCATION_UPDATE_INTERVAL_MS = 3000;
 
 // Starting point for the simulated track (used by the mock only).
 export const MOCK_START_COORDINATES = { latitude: 28.6139, longitude: 77.209 }; // New Delhi
+
+// --- Geo-fencing ----------------------------------------------------------
+// Zones come from the mock provider (static, on-device) until the backend
+// exposes them. Flip to false + implement the real endpoint to use live zones.
+export const USE_MOCK_GEOFENCE = true;
