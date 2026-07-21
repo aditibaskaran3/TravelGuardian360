@@ -11,6 +11,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import TopBar from '../components/ui/TopBar';
 import BottomNavBar from '../components/ui/BottomNavBar';
+import LiveBanner from '../features/notifications/components/LiveBanner';
 import { TABS, type TabKey } from './tabs';
 import { useTranslation } from '../i18n/useTranslation';
 
@@ -42,6 +43,7 @@ export default function MainTabs() {
         <ActiveScreen />
       </View>
       <BottomNavBar active={active} onChange={setActive} />
+      <LiveBanner />
     </SafeAreaView>
   );
 }

@@ -25,6 +25,12 @@ export const en = {
   'home.phone': 'Phone',
   'home.emergencyContact': 'Emergency contact',
   'home.emergencyPhone': 'Emergency phone',
+  'home.protectionOn': 'Live protection active',
+  'home.protectionOnDesc': 'Your location is being monitored in real time.',
+  'home.protectionOff': 'Protection paused',
+  'home.protectionOffDesc': 'Open the Track tab to start live monitoring.',
+  'home.zonesNearby': '{count} monitored zones nearby',
+  'home.pullToRefresh': 'Pull to refresh',
 
   // Profile screen
   'profile.title': 'Traveller details',

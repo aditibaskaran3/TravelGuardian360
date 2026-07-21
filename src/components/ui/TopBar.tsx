@@ -8,6 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { useAuthStore } from '../../store/authStore';
+import { selectUnreadCount, useNotificationsStore } from '../../store/notificationsStore';
 import { useTranslation } from '../../i18n/useTranslation';
 import type { AppStackParamList } from '../../navigation/types';
 
@@ -17,6 +18,7 @@ export default function TopBar({ title }: { title: string }) {
   const navigation = useNavigation<Nav>();
   const { language } = useTranslation();
   const user = useAuthStore((s) => s.user);
+  const unread = useNotificationsStore(selectUnreadCount);
 
   return (
     <View className="flex-row items-center justify-between border-b border-slate-100 bg-white px-4 py-3">
@@ -24,11 +26,16 @@ export default function TopBar({ title }: { title: string }) {
       <View className="flex-row items-center gap-2">
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel="Open notifications"
+          accessibilityLabel={unread > 0 ? `Open notifications, ${unread} unread` : 'Open notifications'}
           onPress={() => navigation.navigate('Notifications')}
           className="h-10 w-10 items-center justify-center rounded-full bg-rose-50 active:opacity-70"
         >
           <Text className="text-lg">🔔</Text>
+          {unread > 0 && (
+            <View className="absolute -right-0.5 -top-0.5 h-5 min-w-[20px] items-center justify-center rounded-full bg-red-500 px-1">
+              <Text className="text-[10px] font-bold text-white">{unread > 9 ? '9+' : unread}</Text>
+            </View>
+          )}
         </Pressable>
         <Pressable
           accessibilityRole="button"

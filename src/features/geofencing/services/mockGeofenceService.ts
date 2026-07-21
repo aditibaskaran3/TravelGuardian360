@@ -21,6 +21,7 @@ const ZONES: GeoZone[] = [
     id: 'zone-hazard-flood',
     name: 'Flood Hazard Area',
     type: 'hazardous',
+    description: 'Reported flooding — avoid low-lying paths and move to higher ground.',
     // ~300 m north-east of center — the simulated walk can wander into this.
     center: { latitude: latitude + 0.002, longitude: longitude + 0.002 },
     radiusMeters: 180,
@@ -29,6 +30,7 @@ const ZONES: GeoZone[] = [
     id: 'zone-restricted-military',
     name: 'Restricted Military Area',
     type: 'restricted',
+    description: 'Entry prohibited. Leave the area immediately and follow official signage.',
     // ~450 m north of center.
     center: { latitude: latitude + 0.004, longitude },
     radiusMeters: 220,

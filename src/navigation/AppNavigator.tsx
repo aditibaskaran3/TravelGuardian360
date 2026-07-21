@@ -21,6 +21,7 @@ import TravelDocumentsScreen from '../features/settings/screens/TravelDocumentsS
 import TripToolsScreen from '../features/settings/screens/TripToolsScreen';
 import { useGeofenceMonitor } from '../features/geofencing/hooks/useGeofenceMonitor';
 import { useBehaviorMonitor } from '../features/behavior/hooks/useBehaviorMonitor';
+import { useNotificationBridge } from '../features/notifications/hooks/useNotificationBridge';
 import type { AppStackParamList } from './types';
 
 const Stack = createNativeStackNavigator<AppStackParamList>();
@@ -29,6 +30,8 @@ export default function AppNavigator() {
   // Run zone monitoring + behaviour analysis for the whole authenticated session.
   useGeofenceMonitor();
   useBehaviorMonitor();
+  // Translate live store transitions into the real-time notification feed.
+  useNotificationBridge();
 
   return (
     <Stack.Navigator>
