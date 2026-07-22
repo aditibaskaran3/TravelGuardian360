@@ -1,14 +1,27 @@
+/**
+ * Travel documents — securely record important travel papers on-device.
+ *
+ * One traveller can store records for themselves or family members (spouse,
+ * children). Records are persisted locally via travelDocumentsService and can
+ * be added and removed. (Photo capture will be added when a native image
+ * picker is available; for now documents are stored as structured records.)
+ */
 import React, { useEffect, useState } from 'react';
-import { Alert, Image, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
+import { Alert, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 
-import { addTravelDocument, getTravelDocuments, type TravelDocument } from '../services/travelDocumentsService';
+import {
+  addTravelDocument,
+  deleteTravelDocument,
+  getTravelDocuments,
+  type TravelDocument,
+} from '../services/travelDocumentsService';
 
 export default function TravelDocumentsScreen() {
   const [documents, setDocuments] = useState<TravelDocument[]>([]);
   const [name, setName] = useState('');
   const [ownerName, setOwnerName] = useState('');
   const [type, setType] = useState('Passport');
-  const [photoUri, setPhotoUri] = useState<string | undefined>();
+  const [reference, setReference] = useState('');
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -20,51 +33,55 @@ export default function TravelDocumentsScreen() {
     loadDocuments();
   }, []);
 
-  const pickPhoto = () => {
-    if (!photoUri) {
-      setPhotoUri('file:///mock-document-photo.jpg');
-      Alert.alert('Photo selected', 'The document photo has been attached for upload.');
-      return;
-    }
-
-    Alert.alert('Photo already selected', 'This entry already has a document photo attached.');
-  };
-
-  const handleUpload = async () => {
+  const handleAdd = async () => {
     if (!name.trim() || !ownerName.trim()) {
       Alert.alert('Missing details', 'Please enter a document name and the person it belongs to.');
       return;
     }
 
-    if (!photoUri) {
-      Alert.alert('Photo required', 'Please select a document photo before uploading.');
-      return;
-    }
-
     setSaving(true);
-    const created = await addTravelDocument({ name, ownerName, type, photoUri });
+    const created = await addTravelDocument({ name, ownerName, type, reference });
     setDocuments((prev) => [created, ...prev]);
     setName('');
     setOwnerName('');
     setType('Passport');
-    setPhotoUri(undefined);
+    setReference('');
     setSaving(false);
-    Alert.alert('Upload complete', 'Your document photo has been saved successfully.');
+    Alert.alert('Document saved', 'Your travel document has been saved on this device.');
+  };
+
+  const handleDelete = (doc: TravelDocument) => {
+    Alert.alert('Remove document', `Remove "${doc.name}"?`, [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Remove',
+        style: 'destructive',
+        onPress: async () => {
+          const next = await deleteTravelDocument(doc.id);
+          setDocuments(next);
+        },
+      },
+    ]);
   };
 
   return (
     <ScrollView className="flex-1 bg-slate-50" contentContainerClassName="p-4 gap-4">
       <View className="rounded-3xl bg-indigo-600 p-5">
-        <Text className="text-sm font-semibold uppercase tracking-widest text-indigo-200">Secure storage</Text>
-        <Text className="mt-1 text-xl font-semibold text-white">Upload important travel documents</Text>
+        <Text className="text-sm font-semibold uppercase tracking-widest text-indigo-200">
+          Secure storage
+        </Text>
+        <Text className="mt-1 text-xl font-semibold text-white">Keep travel documents handy</Text>
         <Text className="mt-2 text-sm text-indigo-100">
-          One traveller can upload papers for themselves or family members such as a spouse or children.
+          One traveller can record papers for themselves or family members such as a spouse or
+          children.
         </Text>
       </View>
 
       <View className="rounded-2xl bg-white p-4">
         <Text className="text-base font-semibold text-slate-900">Add a document</Text>
-        <Text className="mt-2 text-sm text-slate-500">Upload a photo of the document for digital verification.</Text>
+        <Text className="mt-2 text-sm text-slate-500">
+          Record the document details so they are ready when you need them.
+        </Text>
         <TextInput
           value={name}
           onChangeText={setName}
@@ -80,42 +97,62 @@ export default function TravelDocumentsScreen() {
         <TextInput
           value={type}
           onChangeText={setType}
-          placeholder="Document type"
+          placeholder="Document type (e.g. Passport, Visa)"
+          className="mt-3 rounded-xl border border-slate-200 px-3 py-3 text-sm"
+        />
+        <TextInput
+          value={reference}
+          onChangeText={setReference}
+          placeholder="Document / reference number (optional)"
           className="mt-3 rounded-xl border border-slate-200 px-3 py-3 text-sm"
         />
         <Pressable
           accessibilityRole="button"
-          onPress={pickPhoto}
-          className="mt-3 rounded-2xl border border-dashed border-indigo-300 bg-indigo-50 px-4 py-4 active:opacity-80"
-        >
-          <Text className="text-center text-sm font-semibold text-indigo-700">
-            {photoUri ? 'Photo selected for upload' : 'Pick document photo'}
-          </Text>
-        </Pressable>
-        <Pressable
-          accessibilityRole="button"
-          onPress={handleUpload}
+          onPress={handleAdd}
           disabled={saving}
           className="mt-4 rounded-2xl bg-indigo-600 px-4 py-3 active:opacity-80"
         >
           <Text className="text-center text-sm font-semibold text-white">
-            {saving ? 'Uploading...' : 'Upload document photo'}
+            {saving ? 'Saving...' : 'Save document'}
           </Text>
         </Pressable>
       </View>
 
-      <View className="gap-3">
-        {documents.map((doc) => (
-          <View key={doc.id} className="rounded-2xl border border-slate-100 bg-white p-4">
-            {doc.photoUri ? (
-              <Image source={{ uri: doc.photoUri }} className="mb-3 h-40 w-full rounded-2xl" />
-            ) : null}
-            <Text className="text-base font-semibold text-slate-900">{doc.name}</Text>
-            <Text className="mt-1 text-sm text-slate-500">{doc.ownerName} • {doc.type}</Text>
-            <Text className="mt-2 text-xs font-medium uppercase tracking-widest text-indigo-600">{doc.status}</Text>
-          </View>
-        ))}
-      </View>
+      {documents.length === 0 ? (
+        <Text className="px-2 text-center text-sm text-slate-400">
+          No documents yet. Add your first one above.
+        </Text>
+      ) : (
+        <View className="gap-3">
+          {documents.map((doc) => (
+            <View key={doc.id} className="rounded-2xl border border-slate-100 bg-white p-4">
+              <View className="flex-row items-start justify-between">
+                <View className="flex-1 pr-2">
+                  <Text className="text-base font-semibold text-slate-900">{doc.name}</Text>
+                  <Text className="mt-1 text-sm text-slate-500">
+                    {doc.ownerName} • {doc.type}
+                  </Text>
+                  {doc.reference ? (
+                    <Text className="mt-1 text-sm text-slate-500">No: {doc.reference}</Text>
+                  ) : null}
+                  <Text className="mt-2 text-xs font-medium uppercase tracking-widest text-indigo-600">
+                    {doc.status}
+                  </Text>
+                </View>
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel="Remove document"
+                  hitSlop={8}
+                  onPress={() => handleDelete(doc)}
+                  className="rounded-full bg-red-50 px-3 py-1.5 active:opacity-70"
+                >
+                  <Text className="text-xs font-semibold text-red-600">Remove</Text>
+                </Pressable>
+              </View>
+            </View>
+          ))}
+        </View>
+      )}
     </ScrollView>
   );
 }

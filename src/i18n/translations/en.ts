@@ -47,8 +47,10 @@ export const en = {
   'more.documentsDesc': 'Upload and verify Aadhaar, passport, visa, or insurance papers.',
   'more.tripTools': 'Trip tools',
   'more.tripToolsDesc': 'Access checklists, local support contacts, and route safety updates.',
-  'more.emergency': 'Emergency help',
-  'more.emergencyDesc': 'Quick access to safety insights and support options.',
+  'more.behaviour': 'Behaviour analysis',
+  'more.behaviourDesc': 'Review movement anomalies detected during your trip.',
+  'more.safetyScore': 'Safety score',
+  'more.safetyScoreDesc': 'See the full breakdown of your live safety score.',
   'more.logout': 'Log out',
 
   // Language screen

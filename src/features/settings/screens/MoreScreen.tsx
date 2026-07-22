@@ -21,10 +21,11 @@ type Item = {
 };
 
 const ITEMS: Item[] = [
-  { icon: '�', labelKey: 'more.contacts', descriptionKey: 'more.contactsDesc', route: 'Contacts' },
+  { icon: '📇', labelKey: 'more.contacts', descriptionKey: 'more.contactsDesc', route: 'Contacts' },
   { icon: '🧳', labelKey: 'more.documents', descriptionKey: 'more.documentsDesc', route: 'TravelDocuments' },
   { icon: '🚌', labelKey: 'more.tripTools', descriptionKey: 'more.tripToolsDesc', route: 'TripTools' },
-  { icon: '🆘', labelKey: 'more.emergency', descriptionKey: 'more.emergencyDesc', route: 'SafetyScore' },
+  { icon: '📊', labelKey: 'more.behaviour', descriptionKey: 'more.behaviourDesc', route: 'Behavior' },
+  { icon: '🛡️', labelKey: 'more.safetyScore', descriptionKey: 'more.safetyScoreDesc', route: 'SafetyScore' },
 ];
 
 function Row({ icon, label, description, onPress }: { icon: string; label: string; description: string; onPress: () => void }) {

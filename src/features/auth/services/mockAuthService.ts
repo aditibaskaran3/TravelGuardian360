@@ -16,7 +16,7 @@ type MockUserRecord = User & { password: string };
 const TOKEN_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
 const NETWORK_DELAY_MS = 600; // simulate latency so loading states are visible
 
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+const delay = (ms: number) => new Promise<void>((resolve) => setTimeout(() => resolve(), ms));
 
 const randomId = (): string =>
   Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-4);

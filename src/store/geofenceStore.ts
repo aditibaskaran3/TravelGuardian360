@@ -20,7 +20,6 @@ type GeofenceState = {
 
   loadZones: () => Promise<void>;
   evaluate: (position: Coordinates) => void;
-  dismissAlert: () => void;
   reset: () => void;
 };
 
@@ -60,10 +59,6 @@ export const useGeofenceStore = create<GeofenceState>((set, get) => ({
         ? { zone: newlyEntered.zone, enteredAt: Date.now() }
         : get().activeAlert,
     });
-  },
-
-  dismissAlert() {
-    set({ activeAlert: null });
   },
 
   reset() {

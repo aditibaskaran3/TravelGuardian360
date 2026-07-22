@@ -43,6 +43,21 @@ const persistSession = async (token: string, user: User): Promise<void> => {
   ]);
 };
 
+/**
+ * Reset every per-user store on logout. Loaded lazily via require to avoid a
+ * static import cycle (sosStore imports this module).
+ */
+const resetSessionStores = (): void => {
+  const { useLocationStore } = require('./locationStore');
+  const { useGeofenceStore } = require('./geofenceStore');
+  const { useBehaviorStore } = require('./behaviorStore');
+  const { useSosStore } = require('./sosStore');
+  useLocationStore.getState().reset();
+  useGeofenceStore.getState().reset();
+  useBehaviorStore.getState().reset();
+  useSosStore.getState().reset();
+};
+
 const clearSession = async (): Promise<void> => {
   setAuthToken(null);
   await Promise.all([
@@ -102,6 +117,10 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   async logout() {
     await clearSession();
+    // Clear all per-user in-memory state so a subsequent login on the same
+    // device never inherits the previous traveller's location, zone, behaviour
+    // or SOS data. (Stores are module-level singletons.)
+    resetSessionStores();
     set({ user: null, token: null, status: 'unauthenticated' });
   },
 }));

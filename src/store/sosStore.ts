@@ -35,6 +35,7 @@ type SosState = {
   callEmergencyServices: () => Promise<void>;
   shareCurrentLocation: () => Promise<void>;
   loadHistory: () => Promise<void>;
+  reset: () => void;
 };
 
 const randomId = (): string =>
@@ -140,5 +141,9 @@ export const useSosStore = create<SosState>((set) => ({
   async loadHistory() {
     const history = await sosReportService.history();
     set({ history });
+  },
+
+  reset() {
+    set({ status: 'idle', lastEvent: null, history: [], error: null });
   },
 }));

@@ -40,14 +40,20 @@ function relativeTime(timestamp: number): string {
 
 function NotificationCard({
   item,
+  onPress,
   onDismiss,
 }: {
   item: AppNotification;
+  onPress: (id: string) => void;
   onDismiss: (id: string) => void;
 }) {
   const s = SEVERITY_STYLE[item.severity];
   return (
-    <View className={`flex-row items-start gap-3 rounded-2xl border p-4 ${s.card}`}>
+    <Pressable
+      accessibilityRole="button"
+      onPress={() => onPress(item.id)}
+      className={`flex-row items-start gap-3 rounded-2xl border p-4 active:opacity-80 ${s.card}`}
+    >
       <Text className="text-xl">{s.icon}</Text>
       <View className="flex-1">
         <View className="flex-row items-center gap-2">
@@ -66,7 +72,7 @@ function NotificationCard({
       >
         <Text className="text-base text-slate-300">✕</Text>
       </Pressable>
-    </View>
+    </Pressable>
   );
 }
 
@@ -74,6 +80,7 @@ export default function NotificationsScreen() {
   const items = useNotificationsStore((s) => s.items);
   const unread = useNotificationsStore(selectUnreadCount);
   const markAllRead = useNotificationsStore((s) => s.markAllRead);
+  const markRead = useNotificationsStore((s) => s.markRead);
   const dismiss = useNotificationsStore((s) => s.dismiss);
   const clearAll = useNotificationsStore((s) => s.clearAll);
   const [refreshing, setRefreshing] = useState(false);
@@ -129,7 +136,7 @@ export default function NotificationsScreen() {
         </View>
       ) : (
         items.map((item) => (
-          <NotificationCard key={item.id} item={item} onDismiss={dismiss} />
+          <NotificationCard key={item.id} item={item} onPress={markRead} onDismiss={dismiss} />
         ))
       )}
     </ScrollView>
