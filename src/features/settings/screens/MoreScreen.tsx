@@ -24,6 +24,8 @@ const ITEMS: Item[] = [
   { icon: '📇', labelKey: 'more.contacts', descriptionKey: 'more.contactsDesc', route: 'Contacts' },
   { icon: '🧳', labelKey: 'more.documents', descriptionKey: 'more.documentsDesc', route: 'TravelDocuments' },
   { icon: '🚌', labelKey: 'more.tripTools', descriptionKey: 'more.tripToolsDesc', route: 'TripTools' },
+  { icon: '📋', labelKey: 'more.itinerary', descriptionKey: 'more.itineraryDesc', route: 'Itinerary' },
+  { icon: '👨‍👩‍👧‍👦', labelKey: 'more.familyMembers', descriptionKey: 'more.familyMembersDesc', route: 'FamilyMembers' },
   { icon: '📊', labelKey: 'more.behaviour', descriptionKey: 'more.behaviourDesc', route: 'Behavior' },
   { icon: '🛡️', labelKey: 'more.safetyScore', descriptionKey: 'more.safetyScoreDesc', route: 'SafetyScore' },
 ];

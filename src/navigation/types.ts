@@ -21,4 +21,8 @@ export type AppStackParamList = {
   Notifications: undefined;
   TravelDocuments: undefined;
   TripTools: undefined;
+  Itinerary: undefined;
+  MedicalID: undefined;
+  FamilyMembers: undefined;
+  FamilyMemberMedical: { memberId: string };
 };

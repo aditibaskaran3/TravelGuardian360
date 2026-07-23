@@ -45,4 +45,10 @@ export const StorageKeys = {
   emergencyContacts: 'contacts/list',
   // Travel documents uploaded by the traveller.
   travelDocuments: 'documents/list',
+  // Travel itineraries (destination, dates, contacts).
+  itineraries: 'itinerary/list',
+  // Emergency medical ID data.
+  medicalID: 'medical/id',
+  // Family members with their medical information.
+  familyMembers: 'family/members',
 } as const;

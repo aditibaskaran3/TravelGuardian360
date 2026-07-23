@@ -82,29 +82,41 @@ export default function TravelDocumentsScreen() {
         <Text className="mt-2 text-sm text-slate-500">
           Record the document details so they are ready when you need them.
         </Text>
+
+        <Text className="mt-3 text-xs font-semibold text-slate-600">Document name</Text>
         <TextInput
           value={name}
           onChangeText={setName}
-          placeholder="Document name (e.g. Wife Passport)"
-          className="mt-3 rounded-xl border border-slate-200 px-3 py-3 text-sm"
+          placeholder="E.g. Wife Passport, Son Visa, Travel Insurance"
+          placeholderTextColor="#a0aec0"
+          className="mt-1 rounded-xl border border-slate-200 px-3 py-3 text-sm text-slate-900"
         />
+
+        <Text className="mt-3 text-xs font-semibold text-slate-600">Who is this document for?</Text>
         <TextInput
           value={ownerName}
           onChangeText={setOwnerName}
-          placeholder="Who is this for?"
-          className="mt-3 rounded-xl border border-slate-200 px-3 py-3 text-sm"
+          placeholder="E.g. John, Wife, Son, Daughter"
+          placeholderTextColor="#a0aec0"
+          className="mt-1 rounded-xl border border-slate-200 px-3 py-3 text-sm text-slate-900"
         />
+
+        <Text className="mt-3 text-xs font-semibold text-slate-600">Document type</Text>
         <TextInput
           value={type}
           onChangeText={setType}
-          placeholder="Document type (e.g. Passport, Visa)"
-          className="mt-3 rounded-xl border border-slate-200 px-3 py-3 text-sm"
+          placeholder="E.g. Passport, Visa, Travel Insurance, ID Card"
+          placeholderTextColor="#a0aec0"
+          className="mt-1 rounded-xl border border-slate-200 px-3 py-3 text-sm text-slate-900"
         />
+
+        <Text className="mt-3 text-xs font-semibold text-slate-600">Document/Reference number (optional)</Text>
         <TextInput
           value={reference}
           onChangeText={setReference}
-          placeholder="Document / reference number (optional)"
-          className="mt-3 rounded-xl border border-slate-200 px-3 py-3 text-sm"
+          placeholder="E.g. Passport: A12345678, Visa: ABC123"
+          placeholderTextColor="#a0aec0"
+          className="mt-1 rounded-xl border border-slate-200 px-3 py-3 text-sm text-slate-900"
         />
         <Pressable
           accessibilityRole="button"

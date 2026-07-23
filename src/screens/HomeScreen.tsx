@@ -14,8 +14,10 @@ import { useAuthStore } from '../store/authStore';
 import { useLocationStore } from '../store/locationStore';
 import { useGeofenceStore } from '../store/geofenceStore';
 import { useSafetyScore } from '../features/safety/hooks/useSafetyScore';
+import { useTripMode } from '../features/trip/hooks/useTripMode';
 import ScoreBadge from '../features/safety/components/ScoreBadge';
 import PulseDot from '../components/ui/PulseDot';
+import Button from '../components/ui/Button';
 import { useTranslation } from '../i18n/useTranslation';
 import type { AppStackParamList } from '../navigation/types';
 
@@ -27,6 +29,7 @@ export default function HomeScreen() {
   const isTracking = useLocationStore((s) => s.status === 'tracking');
   const zonesNearby = useGeofenceStore((s) => s.proximity.length);
   const score = useSafetyScore();
+  const { isActive, isPaused, trip, startTrip, endTrip, pauseTrip, resumeTrip } = useTripMode();
   const { t } = useTranslation();
   const [refreshing, setRefreshing] = useState(false);
 
@@ -51,6 +54,80 @@ export default function HomeScreen() {
           {t('home.greeting', { name: user.fullName.split(' ')[0] })} 👋
         </Text>
         <Text className="mt-1 text-slate-500">{t('home.subtitle')}</Text>
+      </View>
+
+      {/* Trip Mode Status */}
+      <View
+        className={`rounded-2xl border p-4 ${
+          isActive ? 'border-blue-100 bg-blue-50' : isPaused ? 'border-amber-100 bg-amber-50' : 'border-slate-100 bg-white'
+        }`}
+      >
+        <View className="flex-row items-center gap-2">
+          <PulseDot colorClass={isActive ? 'bg-blue-500' : isPaused ? 'bg-amber-500' : 'bg-slate-300'} active={isActive} />
+          <Text
+            className={`text-base font-semibold ${
+              isActive ? 'text-blue-900' : isPaused ? 'text-amber-900' : 'text-slate-900'
+            }`}
+          >
+            {t(isActive ? 'trip.active' : isPaused ? 'trip.paused' : 'trip.notActive')}
+          </Text>
+        </View>
+        {trip && trip.startedAt ? (
+          <Text className="mt-1 text-xs text-slate-500">
+            Started {new Date(trip.startedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+          </Text>
+        ) : null}
+        <View className="mt-3 flex-row gap-2">
+          {!isActive && !isPaused ? (
+            <Button label={t('trip.startButton')} onPress={startTrip} />
+          ) : (
+            <>
+              {isActive ? (
+                <>
+                  <Pressable
+                    accessibilityRole="button"
+                    onPress={pauseTrip}
+                    className="flex-1 rounded-xl border border-slate-200 bg-white px-3 py-2 active:opacity-70"
+                  >
+                    <Text className="text-center text-xs font-semibold text-slate-600">
+                      {t('trip.pauseButton')}
+                    </Text>
+                  </Pressable>
+                  <Pressable
+                    accessibilityRole="button"
+                    onPress={endTrip}
+                    className="flex-1 rounded-xl bg-red-100 px-3 py-2 active:opacity-70"
+                  >
+                    <Text className="text-center text-xs font-semibold text-red-600">
+                      {t('trip.endButton')}
+                    </Text>
+                  </Pressable>
+                </>
+              ) : (
+                <>
+                  <Pressable
+                    accessibilityRole="button"
+                    onPress={resumeTrip}
+                    className="flex-1 rounded-xl bg-blue-100 px-3 py-2 active:opacity-70"
+                  >
+                    <Text className="text-center text-xs font-semibold text-blue-600">
+                      {t('trip.resumeButton')}
+                    </Text>
+                  </Pressable>
+                  <Pressable
+                    accessibilityRole="button"
+                    onPress={endTrip}
+                    className="flex-1 rounded-xl bg-red-100 px-3 py-2 active:opacity-70"
+                  >
+                    <Text className="text-center text-xs font-semibold text-red-600">
+                      {t('trip.endButton')}
+                    </Text>
+                  </Pressable>
+                </>
+              )}
+            </>
+          )}
+        </View>
       </View>
 
       {/* Digital Tourist ID */}
