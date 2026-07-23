@@ -105,26 +105,65 @@ export default function ItineraryScreen() {
 
         <Text className="mt-3 text-xs font-semibold text-slate-600">Travel dates</Text>
         <View className="mt-1 flex-row gap-2">
-          <View className="flex-1">
+          <Pressable
+            onPress={() => {
+              Alert.prompt(
+                '📅 Start date',
+                'Enter start date (YYYY-MM-DD)\nExample: 2024-07-15',
+                [
+                  { text: 'Cancel', onPress: () => {}, style: 'cancel' },
+                  {
+                    text: 'OK',
+                    onPress: (value: string | undefined) => {
+                      if (value && /^\d{4}-\d{2}-\d{2}$/.test(value)) {
+                        setStartDate(value);
+                      } else {
+                        Alert.alert('Invalid date', 'Please use YYYY-MM-DD format');
+                      }
+                    },
+                  },
+                ],
+                'plain-text',
+                startDate,
+              );
+            }}
+            className="flex-1 rounded-xl border border-slate-200 bg-white px-3 py-3 active:opacity-70"
+          >
             <Text className="text-xs text-slate-500">Start date</Text>
-            <TextInput
-              value={startDate}
-              onChangeText={setStartDate}
-              placeholder="YYYY-MM-DD"
-              placeholderTextColor="#a0aec0"
-              className="mt-1 rounded-xl border border-slate-200 px-3 py-2 text-sm text-slate-900"
-            />
-          </View>
-          <View className="flex-1">
+            <Text className="mt-1 text-sm font-semibold text-slate-900">
+              {startDate ? `📅 ${startDate}` : '📅 Tap to select'}
+            </Text>
+          </Pressable>
+
+          <Pressable
+            onPress={() => {
+              Alert.prompt(
+                '📅 End date',
+                'Enter end date (YYYY-MM-DD)\nExample: 2024-07-20',
+                [
+                  { text: 'Cancel', onPress: () => {}, style: 'cancel' },
+                  {
+                    text: 'OK',
+                    onPress: (value: string | undefined) => {
+                      if (value && /^\d{4}-\d{2}-\d{2}$/.test(value)) {
+                        setEndDate(value);
+                      } else {
+                        Alert.alert('Invalid date', 'Please use YYYY-MM-DD format');
+                      }
+                    },
+                  },
+                ],
+                'plain-text',
+                endDate,
+              );
+            }}
+            className="flex-1 rounded-xl border border-slate-200 bg-white px-3 py-3 active:opacity-70"
+          >
             <Text className="text-xs text-slate-500">End date</Text>
-            <TextInput
-              value={endDate}
-              onChangeText={setEndDate}
-              placeholder="YYYY-MM-DD"
-              placeholderTextColor="#a0aec0"
-              className="mt-1 rounded-xl border border-slate-200 px-3 py-2 text-sm text-slate-900"
-            />
-          </View>
+            <Text className="mt-1 text-sm font-semibold text-slate-900">
+              {endDate ? `📅 ${endDate}` : '📅 Tap to select'}
+            </Text>
+          </Pressable>
         </View>
 
         <Text className="mt-3 text-xs font-semibold text-slate-600">Additional notes (optional)</Text>
