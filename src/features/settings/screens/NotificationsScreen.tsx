@@ -13,6 +13,8 @@ import {
   selectUnreadCount,
   useNotificationsStore,
 } from '../../../store/notificationsStore';
+import { useTranslation } from '../../../i18n/useTranslation';
+import type { TranslationKey } from '../../../i18n';
 import type {
   AppNotification,
   NotificationSeverity,
@@ -28,14 +30,14 @@ const SEVERITY_STYLE: Record<
   critical: { dot: 'bg-red-500', card: 'bg-red-50 border-red-100', title: 'text-red-900', icon: '🚨' },
 };
 
-function relativeTime(timestamp: number): string {
+function relativeTime(timestamp: number, t: (key: TranslationKey, params?: Record<string, string | number>) => string): string {
   const diff = Date.now() - timestamp;
   const mins = Math.floor(diff / 60000);
-  if (mins < 1) return 'just now';
-  if (mins < 60) return `${mins}m ago`;
+  if (mins < 1) return t('common.justNow');
+  if (mins < 60) return t('common.minutesAgo', { count: mins });
   const hours = Math.floor(mins / 60);
-  if (hours < 24) return `${hours}h ago`;
-  return `${Math.floor(hours / 24)}d ago`;
+  if (hours < 24) return t('common.hoursAgo', { count: hours });
+  return t('common.daysAgo', { count: Math.floor(hours / 24) });
 }
 
 function NotificationCard({
@@ -47,6 +49,7 @@ function NotificationCard({
   onPress: (id: string) => void;
   onDismiss: (id: string) => void;
 }) {
+  const { t } = useTranslation();
   const s = SEVERITY_STYLE[item.severity];
   return (
     <Pressable
@@ -59,13 +62,13 @@ function NotificationCard({
         <View className="flex-row items-center gap-2">
           {!item.read && <View className={`h-2 w-2 rounded-full ${s.dot}`} />}
           <Text className={`flex-1 text-base font-semibold ${s.title}`}>{item.title}</Text>
-          <Text className="text-xs text-slate-400">{relativeTime(item.timestamp)}</Text>
+          <Text className="text-xs text-slate-400">{relativeTime(item.timestamp, t)}</Text>
         </View>
         <Text className="mt-1 text-sm text-slate-600">{item.body}</Text>
       </View>
       <Pressable
         accessibilityRole="button"
-        accessibilityLabel="Dismiss notification"
+        accessibilityLabel={t('notifications.dismissLabel')}
         hitSlop={8}
         onPress={() => onDismiss(item.id)}
         className="px-1"
@@ -77,6 +80,7 @@ function NotificationCard({
 }
 
 export default function NotificationsScreen() {
+  const { t } = useTranslation();
   const items = useNotificationsStore((s) => s.items);
   const unread = useNotificationsStore(selectUnreadCount);
   const markAllRead = useNotificationsStore((s) => s.markAllRead);
@@ -105,13 +109,13 @@ export default function NotificationsScreen() {
     >
       <View className="flex-row items-center justify-between">
         <View>
-          <Text className="text-lg font-bold text-slate-900">Activity</Text>
+          <Text className="text-lg font-bold text-slate-900">{t('notifications.activity')}</Text>
           <Text className="text-sm text-slate-500">
             {items.length === 0
-              ? 'No alerts yet'
+              ? t('notifications.noAlerts')
               : unread > 0
-                ? `${unread} unread · ${items.length} total`
-                : `${items.length} total`}
+                ? t('notifications.unreadSummary', { unread, total: items.length })
+                : t('notifications.totalSummary', { total: items.length })}
           </Text>
         </View>
         {items.length > 0 && (
@@ -120,7 +124,7 @@ export default function NotificationsScreen() {
             onPress={clearAll}
             className="rounded-full bg-slate-100 px-3 py-1.5 active:opacity-70"
           >
-            <Text className="text-xs font-semibold text-slate-600">Clear all</Text>
+            <Text className="text-xs font-semibold text-slate-600">{t('notifications.clearAll')}</Text>
           </Pressable>
         )}
       </View>
@@ -128,10 +132,9 @@ export default function NotificationsScreen() {
       {items.length === 0 ? (
         <View className="mt-16 items-center gap-2">
           <Text className="text-5xl">🛡️</Text>
-          <Text className="text-base font-semibold text-slate-700">You're all caught up</Text>
+          <Text className="text-base font-semibold text-slate-700">{t('notifications.emptyTitle')}</Text>
           <Text className="px-8 text-center text-sm text-slate-400">
-            Safety alerts, geo-fence warnings, SOS updates, and reminders will appear here in real
-            time.
+            {t('notifications.emptyBody')}
           </Text>
         </View>
       ) : (

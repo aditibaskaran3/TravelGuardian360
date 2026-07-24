@@ -11,6 +11,7 @@ import { ScrollView, Text, View } from 'react-native';
 import Button from '../../../components/ui/Button';
 import { useLocationTracking } from '../hooks/useLocationTracking';
 import { USE_MOCK_LOCATION } from '../../../config/env';
+import { useTranslation } from '../../../i18n/useTranslation';
 import { formatCoord, formatDistance, formatSpeed } from '../../../utils/geo';
 
 function Stat({ label, value }: { label: string; value: string }) {
@@ -23,6 +24,7 @@ function Stat({ label, value }: { label: string; value: string }) {
 }
 
 export default function TrackingScreen() {
+  const { t } = useTranslation();
   const {
     current,
     history,
@@ -41,7 +43,7 @@ export default function TrackingScreen() {
       {USE_MOCK_LOCATION ? (
         <View className="rounded-xl bg-amber-100 px-4 py-2">
           <Text className="text-xs text-amber-800">
-            Simulated GPS (mock). Install geolocation + flip USE_MOCK_LOCATION for real device GPS.
+            {t('tracking.mockNotice')}
           </Text>
         </View>
       ) : null}
@@ -49,7 +51,7 @@ export default function TrackingScreen() {
       {/* Current position card */}
       <View className="rounded-2xl bg-indigo-600 p-5">
         <Text className="text-xs font-semibold uppercase tracking-widest text-indigo-200">
-          Current position
+          {t('tracking.currentPosition')}
         </Text>
         {current ? (
           <>
@@ -57,21 +59,21 @@ export default function TrackingScreen() {
               {formatCoord(current.latitude)}, {formatCoord(current.longitude)}
             </Text>
             <Text className="mt-1 text-indigo-100">
-              Accuracy: {current.accuracy != null ? `${Math.round(current.accuracy)} m` : '—'}
+              {t('tracking.accuracy', { value: current.accuracy != null ? `${Math.round(current.accuracy)} m` : '—' })}
             </Text>
           </>
         ) : (
           <Text className="mt-2 text-lg text-indigo-100">
-            {isTracking ? 'Acquiring signal…' : 'Not tracking'}
+            {isTracking ? t('tracking.acquiringSignal') : t('tracking.notTracking')}
           </Text>
         )}
       </View>
 
       {/* Stats */}
       <View className="flex-row gap-3">
-        <Stat label="Distance" value={formatDistance(distanceMeters)} />
-        <Stat label="Speed" value={formatSpeed(current?.speed ?? null)} />
-        <Stat label="Points" value={String(history.length)} />
+        <Stat label={t('tracking.distance')} value={formatDistance(distanceMeters)} />
+        <Stat label={t('tracking.speed')} value={formatSpeed(current?.speed ?? null)} />
+        <Stat label={t('tracking.points')} value={String(history.length)} />
       </View>
 
       {error ? (
@@ -83,19 +85,19 @@ export default function TrackingScreen() {
       {/* Controls */}
       <View className="gap-3">
         {isTracking ? (
-          <Button label="Stop tracking" variant="secondary" onPress={stopTracking} />
+          <Button label={t('tracking.stopTracking')} variant="secondary" onPress={stopTracking} />
         ) : (
-          <Button label="Start tracking" onPress={() => startTracking()} />
+          <Button label={t('tracking.startTracking')} onPress={() => startTracking()} />
         )}
         {history.length > 0 && !isTracking ? (
-          <Button label="Clear track" variant="ghost" onPress={reset} />
+          <Button label={t('tracking.clearTrack')} variant="ghost" onPress={reset} />
         ) : null}
       </View>
 
       {/* Recent points */}
       {recent.length > 0 ? (
         <View className="rounded-2xl bg-white p-4">
-          <Text className="mb-2 text-base font-bold text-slate-900">Recent points</Text>
+          <Text className="mb-2 text-base font-bold text-slate-900">{t('tracking.recentPoints')}</Text>
           {recent.map((s) => (
             <View
               key={s.timestamp}

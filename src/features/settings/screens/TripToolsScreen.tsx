@@ -11,47 +11,50 @@ import React, { useState } from 'react';
 import { Alert, Linking, Pressable, ScrollView, Text, View } from 'react-native';
 
 import { EMERGENCY_NUMBER } from '../../../config/env';
+import { useTranslation } from '../../../i18n/useTranslation';
+import type { TranslationKey } from '../../../i18n';
 
 const CHECKLIST_ITEMS = [
-  'Share your live location with a trusted contact',
-  'Save offline maps for your destination',
-  'Note the nearest hospital and police station',
-  'Keep copies of ID and travel documents',
-  'Carry enough local currency for emergencies',
-  'Charge your phone and pack a power bank',
+  'tripTools.items.0',
+  'tripTools.items.1',
+  'tripTools.items.2',
+  'tripTools.items.3',
+  'tripTools.items.4',
+  'tripTools.items.5',
 ];
 
-type Helpline = { label: string; number: string; note: string };
+type Helpline = { key: TranslationKey; number: string; noteKey: TranslationKey };
 
 const HELPLINES: Helpline[] = [
-  { label: 'Emergency services', number: EMERGENCY_NUMBER, note: 'Police · Fire · Ambulance' },
-  { label: 'Tourist helpline', number: '1363', note: 'Ministry of Tourism, 24×7' },
-  { label: 'Women helpline', number: '1091', note: 'Nationwide' },
-  { label: 'Disaster management', number: '108', note: 'Emergency response' },
+  { key: 'tripTools.emergencyServices', number: EMERGENCY_NUMBER, noteKey: 'tripTools.emergencyServicesNote' },
+  { key: 'tripTools.touristHelpline', number: '1363', noteKey: 'tripTools.touristHelplineNote' },
+  { key: 'tripTools.womenHelpline', number: '1091', noteKey: 'tripTools.womenHelplineNote' },
+  { key: 'tripTools.disasterManagement', number: '108', noteKey: 'tripTools.disasterManagementNote' },
 ];
 
 const ADVISORY_URL = 'https://www.mea.gov.in/travel-advisories.htm';
 
-async function dial(number: string) {
+async function dial(number: string, t: (key: TranslationKey, params?: Record<string, string | number>) => string) {
   const url = `tel:${number}`;
   const canOpen = await Linking.canOpenURL(url);
   if (!canOpen) {
-    Alert.alert('Unable to place call', `Please dial ${number} manually.`);
+    Alert.alert(t('tripTools.callFailedTitle'), t('tripTools.callFailedMessage', { number }));
     return;
   }
   await Linking.openURL(url);
 }
 
-async function openAdvisory() {
+async function openAdvisory(t: (key: TranslationKey, params?: Record<string, string | number>) => string) {
   const canOpen = await Linking.canOpenURL(ADVISORY_URL);
   if (!canOpen) {
-    Alert.alert('Unable to open link', 'No browser is available on this device.');
+    Alert.alert(t('tripTools.linkFailedTitle'), t('tripTools.linkFailedMessage'));
     return;
   }
   await Linking.openURL(ADVISORY_URL);
 }
 
 export default function TripToolsScreen() {
+  const { t } = useTranslation();
   const [done, setDone] = useState<Record<number, boolean>>({});
   const toggle = (index: number) =>
     setDone((prev) => ({ ...prev, [index]: !prev[index] }));
@@ -61,23 +64,21 @@ export default function TripToolsScreen() {
     <ScrollView className="flex-1 bg-slate-50" contentContainerClassName="p-4 gap-4">
       <View className="rounded-3xl bg-emerald-600 p-5">
         <Text className="text-sm font-semibold uppercase tracking-widest text-emerald-100">
-          Trip support
+          {t('tripTools.title')}
         </Text>
-        <Text className="mt-1 text-xl font-semibold text-white">Helpful tools for safer travel</Text>
-        <Text className="mt-2 text-sm text-emerald-100">
-          Practical resources you can use before and during your journey.
-        </Text>
+        <Text className="mt-1 text-xl font-semibold text-white">{t('tripTools.subtitle')}</Text>
+        <Text className="mt-2 text-sm text-emerald-100">{t('tripTools.description')}</Text>
       </View>
 
       {/* Interactive safety checklist */}
       <View className="rounded-2xl border border-slate-100 bg-white p-4">
         <View className="mb-1 flex-row items-center justify-between">
-          <Text className="text-base font-semibold text-slate-900">Pre-trip safety checklist</Text>
+          <Text className="text-base font-semibold text-slate-900">{t('tripTools.checklistTitle')}</Text>
           <Text className="text-xs font-medium text-emerald-600">
             {completed}/{CHECKLIST_ITEMS.length}
           </Text>
         </View>
-        <Text className="mb-2 text-sm text-slate-500">Tap each item as you complete it.</Text>
+        <Text className="mb-2 text-sm text-slate-500">{t('tripTools.checklistHint')}</Text>
         <View className="gap-2">
           {CHECKLIST_ITEMS.map((item, index) => {
             const checked = !!done[index];
@@ -101,7 +102,7 @@ export default function TripToolsScreen() {
                     checked ? 'text-slate-400 line-through' : 'text-slate-700'
                   }`}
                 >
-                  {item}
+                  {t(item as any)}
                 </Text>
               </Pressable>
             );
@@ -111,19 +112,19 @@ export default function TripToolsScreen() {
 
       {/* Local support contacts — tap to call */}
       <View className="rounded-2xl border border-slate-100 bg-white p-4">
-        <Text className="text-base font-semibold text-slate-900">Local support contacts</Text>
-        <Text className="mb-2 text-sm text-slate-500">Tap a helpline to call it directly.</Text>
+        <Text className="text-base font-semibold text-slate-900">{t('tripTools.contactsTitle')}</Text>
+        <Text className="mb-2 text-sm text-slate-500">{t('tripTools.contactsHint')}</Text>
         <View className="gap-2">
           {HELPLINES.map((line) => (
             <Pressable
               key={line.number}
               accessibilityRole="button"
-              onPress={() => dial(line.number)}
+              onPress={() => dial(line.number, t)}
               className="flex-row items-center justify-between rounded-xl bg-slate-50 px-3 py-3 active:opacity-70"
             >
               <View className="flex-1 pr-2">
-                <Text className="text-sm font-semibold text-slate-900">{line.label}</Text>
-                <Text className="text-xs text-slate-500">{line.note}</Text>
+                <Text className="text-sm font-semibold text-slate-900">{t(line.key)}</Text>
+                <Text className="text-xs text-slate-500">{t(line.noteKey)}</Text>
               </View>
               <Text className="text-sm font-bold text-emerald-600">📞 {line.number}</Text>
             </Pressable>
@@ -134,14 +135,12 @@ export default function TripToolsScreen() {
       {/* Route safety briefing */}
       <Pressable
         accessibilityRole="button"
-        onPress={openAdvisory}
+        onPress={() => openAdvisory(t)}
         className="rounded-2xl border border-slate-100 bg-white p-4 active:bg-slate-50"
       >
-        <Text className="text-base font-semibold text-slate-900">Route safety briefing</Text>
-        <Text className="mt-1 text-sm text-slate-500">
-          Check official travel advisories before you move. Opens in your browser.
-        </Text>
-        <Text className="mt-2 text-sm font-semibold text-emerald-600">View advisories →</Text>
+        <Text className="text-base font-semibold text-slate-900">{t('tripTools.advisoryTitle')}</Text>
+        <Text className="mt-1 text-sm text-slate-500">{t('tripTools.advisoryBody')}</Text>
+        <Text className="mt-2 text-sm font-semibold text-emerald-600">{t('tripTools.advisoryLink')}</Text>
       </Pressable>
     </ScrollView>
   );

@@ -11,9 +11,11 @@ import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import Button from '../../../components/ui/Button';
 import { useSos } from '../hooks/useSos';
 import { useAuthStore } from '../../../store/authStore';
+import { useTranslation } from '../../../i18n/useTranslation';
 import { EMERGENCY_NUMBER } from '../../../config/env';
 
 export default function SosScreen() {
+  const { t } = useTranslation();
   const user = useAuthStore((s) => s.user);
   const {
     isSending,
@@ -27,13 +29,13 @@ export default function SosScreen() {
 
   const confirmAndTrigger = () => {
     Alert.alert(
-      'Send emergency SOS?',
-      `This will prepare an SOS message with your live location for ${
-        user?.emergencyContact.name ?? 'your emergency contact'
-      }.`,
+      t('sos.confirmTitle'),
+      t('sos.confirmMessage', {
+        name: user?.emergencyContact.name ?? t('sos.defaultContactName'),
+      }),
       [
-        { text: 'Cancel', style: 'cancel' },
-        { text: 'Send SOS', style: 'destructive', onPress: () => triggerSos() },
+        { text: t('common.cancel'), style: 'cancel' },
+        { text: t('sos.send'), style: 'destructive', onPress: () => triggerSos() },
       ],
     );
   };
@@ -44,7 +46,7 @@ export default function SosScreen() {
       <View className="items-center py-4">
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel="Send emergency SOS"
+          accessibilityLabel={t('sos.accessibilityLabel')}
           disabled={isSending}
           onPress={confirmAndTrigger}
           className={`h-48 w-48 items-center justify-center rounded-full bg-red-600 active:bg-red-700 ${
@@ -53,7 +55,7 @@ export default function SosScreen() {
         >
           <Text className="text-4xl font-extrabold text-white">SOS</Text>
           <Text className="mt-1 text-sm text-red-100">
-            {isSending ? 'Preparing…' : 'Tap to alert'}
+            {isSending ? t('sos.preparing') : t('sos.tapToAlert')}
           </Text>
         </Pressable>
       </View>
@@ -66,34 +68,34 @@ export default function SosScreen() {
 
       {/* Quick actions */}
       <View className="gap-3 rounded-2xl bg-white p-5">
-        <Text className="text-base font-bold text-slate-900">Quick actions</Text>
+        <Text className="text-base font-bold text-slate-900">{t('sos.quickActions')}</Text>
         <Button
-          label={`Call ${user?.emergencyContact.name ?? 'contact'}`}
+          label={t('sos.callContact', { name: user?.emergencyContact.name ?? t('sos.defaultContactName') })}
           variant="secondary"
           onPress={callEmergencyContact}
         />
         <Button
-          label={`Call emergency services (${EMERGENCY_NUMBER})`}
+          label={t('sos.callEmergencyServices', { number: EMERGENCY_NUMBER })}
           variant="secondary"
           onPress={callEmergencyServices}
         />
-        <Button label="Share my live location" variant="ghost" onPress={shareCurrentLocation} />
+        <Button label={t('sos.shareLocation')} variant="ghost" onPress={shareCurrentLocation} />
       </View>
 
       {/* History */}
       {history.length > 0 ? (
         <View className="rounded-2xl bg-white p-5">
-          <Text className="mb-2 text-base font-bold text-slate-900">Recent SOS activations</Text>
+          <Text className="mb-2 text-base font-bold text-slate-900">{t('sos.recentActivations')}</Text>
           {history.slice(0, 10).map((e) => (
             <View key={e.id} className="border-b border-slate-100 py-2">
               <Text className="font-medium text-slate-800">
                 {new Date(e.timestamp).toLocaleString()}
               </Text>
               <Text className="text-sm text-slate-500">
-                To {e.contactName} ·{' '}
+                {t('sos.toContact', { name: e.contactName })} ·{' '}
                 {e.coordinates
                   ? `${e.coordinates.latitude.toFixed(4)}, ${e.coordinates.longitude.toFixed(4)}`
-                  : 'location unavailable'}
+                  : t('sos.locationUnavailable')}
               </Text>
             </View>
           ))}

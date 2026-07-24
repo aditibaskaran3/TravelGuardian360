@@ -4,12 +4,14 @@
  */
 import React from 'react';
 import { Text, View } from 'react-native';
+import { useTranslation } from '../../../i18n/useTranslation';
+import type { TranslationKey } from '../../../i18n';
 import type { SafetyBand } from '../types';
 
-const BAND_LABEL: Record<SafetyBand, string> = {
-  high: 'Safe',
-  moderate: 'Caution',
-  low: 'At risk',
+const BAND_LABEL_KEY: Record<SafetyBand, TranslationKey> = {
+  high: 'safety.safe',
+  moderate: 'safety.caution',
+  low: 'safety.atRisk',
 };
 
 // Tailwind classes per band (bg + text).
@@ -26,6 +28,7 @@ type Props = {
 };
 
 export default function ScoreBadge({ value, band, size = 'sm' }: Props) {
+  const { t } = useTranslation();
   const style = BAND_STYLE[band];
 
   if (size === 'lg') {
@@ -35,10 +38,10 @@ export default function ScoreBadge({ value, band, size = 'sm' }: Props) {
           className={`h-40 w-40 items-center justify-center rounded-full border-8 bg-white ${style.ring}`}
         >
           <Text className={`text-5xl font-extrabold ${style.text}`}>{value}</Text>
-          <Text className="text-xs uppercase tracking-widest text-slate-400">/ 100</Text>
+          <Text className="text-xs uppercase tracking-widest text-slate-400">{t('safety.of100')}</Text>
         </View>
         <View className={`mt-3 rounded-full px-4 py-1 ${style.chip}`}>
-          <Text className={`text-sm font-semibold ${style.text}`}>{BAND_LABEL[band]}</Text>
+          <Text className={`text-sm font-semibold ${style.text}`}>{t(BAND_LABEL_KEY[band])}</Text>
         </View>
       </View>
     );
@@ -47,7 +50,7 @@ export default function ScoreBadge({ value, band, size = 'sm' }: Props) {
   return (
     <View className={`flex-row items-center gap-2 rounded-full px-3 py-1 ${style.chip}`}>
       <Text className={`text-base font-bold ${style.text}`}>{value}</Text>
-      <Text className={`text-xs font-medium ${style.text}`}>{BAND_LABEL[band]}</Text>
+      <Text className={`text-xs font-medium ${style.text}`}>{t(BAND_LABEL_KEY[band])}</Text>
     </View>
   );
 }

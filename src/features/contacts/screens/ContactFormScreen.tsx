@@ -10,6 +10,7 @@ import TextField from '../../../components/ui/TextField';
 import Button from '../../../components/ui/Button';
 import { useForm } from '../../../hooks/useForm';
 import { useContactsStore } from '../../../store/contactsStore';
+import { useTranslation } from '../../../i18n/useTranslation';
 import { contactInitialValues, contactSchema } from '../schemas/contactSchema';
 import type { AppStackParamList } from '../../../navigation/types';
 
@@ -17,6 +18,7 @@ type Props = NativeStackScreenProps<AppStackParamList, 'ContactForm'>;
 
 export default function ContactFormScreen({ route, navigation }: Props) {
   const editingId = route.params?.id;
+  const { t } = useTranslation();
   const existing = useContactsStore((s) =>
     editingId ? s.contacts.find((c) => c.id === editingId) : undefined,
   );
@@ -39,27 +41,27 @@ export default function ContactFormScreen({ route, navigation }: Props) {
       }
       navigation.goBack();
     } catch (error) {
-      Alert.alert('Could not save', (error as Error).message);
+      Alert.alert(t('contacts.couldNotSave'), (error as Error).message);
     }
   });
 
   return (
     <ScreenContainer>
-      <TextField label="Name" placeholder="Full name" autoCapitalize="words" {...form.field('name')} />
+      <TextField label={t('contacts.nameLabel')} placeholder={t('contacts.namePlaceholder')} autoCapitalize="words" {...form.field('name')} />
       <TextField
-        label="Phone"
-        placeholder="+1 555 123 4567"
+        label={t('contacts.phoneLabel')}
+        placeholder={t('contacts.phonePlaceholder')}
         keyboardType="phone-pad"
         {...form.field('phone')}
       />
       <TextField
-        label="Relationship"
-        placeholder="e.g. Parent, Friend, Guide"
+        label={t('contacts.relationshipLabel')}
+        placeholder={t('contacts.relationshipPlaceholder')}
         autoCapitalize="words"
         {...form.field('relationship')}
       />
       <Button
-        label={editingId ? 'Save changes' : 'Add contact'}
+        label={editingId ? t('contacts.saveChanges') : t('contacts.addContact')}
         loading={form.isSubmitting}
         onPress={onSubmit}
       />
