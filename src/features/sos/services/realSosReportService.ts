@@ -8,11 +8,20 @@ import type { SosReportService } from './sosReportService';
 
 export const realSosReportService: SosReportService = {
   async report(event: SosEvent): Promise<void> {
-    await apiClient.post('/sos', event);
+    await apiClient.post('/sos', {
+      timestamp: event.timestamp,
+      coordinates: event.coordinates,
+      contactName: event.contactName,
+    });
   },
 
   async history(): Promise<SosEvent[]> {
-    const { data } = await apiClient.get<SosEvent[]>('/sos');
-    return data;
+    const { data } = await apiClient.get<any[]>('/sos');
+    return data.map((e) => ({
+      id: e.id,
+      timestamp: new Date(e.timestamp).getTime(),
+      coordinates: e.latitude !== null && e.longitude !== null ? { latitude: e.latitude, longitude: e.longitude } : null,
+      contactName: e.contactName,
+    }));
   },
 };

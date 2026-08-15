@@ -4,6 +4,8 @@
  */
 import { create } from './createStore';
 import { useLocationStore } from './locationStore';
+import { apiClient, getApiErrorMessage } from '../api/client';
+import { useAuthStore } from './authStore';
 import type { TripData, TripStatus } from '../features/trip/types';
 
 type TripState = {
@@ -29,6 +31,16 @@ export const useTripStore = create<TripState>((set, get) => ({
       return;
     }
 
+    const token = useAuthStore.getState().token;
+
+    if (token) {
+      try {
+        await apiClient.post('/trip/start');
+      } catch (error) {
+        console.warn(getApiErrorMessage(error, 'Unable to sync trip start with server.'));
+      }
+    }
+
     set({
       trip: {
         id: generateId(),
@@ -40,7 +52,6 @@ export const useTripStore = create<TripState>((set, get) => ({
       status: 'active',
     });
 
-    // Auto-start location tracking when trip begins.
     try {
       await useLocationStore.getState().startTracking();
     } catch {
@@ -52,6 +63,15 @@ export const useTripStore = create<TripState>((set, get) => ({
     const { trip, status } = get();
     if (status === 'idle' || !trip) {
       return;
+    }
+
+    const token = useAuthStore.getState().token;
+    if (token) {
+      try {
+        await apiClient.post('/trip/end');
+      } catch (error) {
+        console.warn(getApiErrorMessage(error, 'Unable to sync trip end with server.'));
+      }
     }
 
     const now = Date.now();
@@ -67,7 +87,6 @@ export const useTripStore = create<TripState>((set, get) => ({
       status: 'idle',
     });
 
-    // Auto-stop location tracking when trip ends.
     useLocationStore.getState().stopTracking();
   },
 

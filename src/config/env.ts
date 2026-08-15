@@ -6,13 +6,14 @@
  * API_BASE_URL at it and set USE_MOCK_API to false — no other code changes.
  */
 
-// Android emulator maps the host machine's localhost to 10.0.2.2.
-// For a physical device over `adb reverse`, 'http://localhost:8000' also works.
-export const API_BASE_URL = 'http://10.0.2.2:8000/api';
+// For a USB-connected Android device, use adb reverse so the device's
+// localhost points to the machine running the FastAPI server.
+// For emulator builds, 10.0.2.2 also works.
+export const API_BASE_URL = 'http://localhost:3001/api';
 
-// While the backend is not built yet, the mock auth service handles everything
-// locally on-device. Flip to false once the real API is available.
-export const USE_MOCK_API = true;
+// Demo backend is active by default so the app can show real request/response
+// flows without needing a production backend.
+export const USE_MOCK_API = false;
 
 // Network timeout for all API calls (ms).
 export const API_TIMEOUT = 15000;
@@ -33,8 +34,7 @@ export const LOCATION_UPDATE_INTERVAL_MS = 3000;
 export const MOCK_START_COORDINATES = { latitude: 28.6139, longitude: 77.209 }; // New Delhi
 
 // --- Geo-fencing ----------------------------------------------------------
-// Zones come from the mock provider (static, on-device) until the backend
-// exposes them. Flip to false + implement the real endpoint to use live zones.
+// Not part of the review scope; keep mock behavior for now.
 export const USE_MOCK_GEOFENCE = true;
 
 // --- Emergency / SOS ------------------------------------------------------
@@ -42,5 +42,6 @@ export const USE_MOCK_GEOFENCE = true;
 // India: 112. Change per deployment region.
 export const EMERGENCY_NUMBER = '112';
 
-// SOS events are logged locally (mock) until the backend exposes /sos.
-export const USE_MOCK_SOS = true;
+// SOS events use the real backend for demo review so emergency incidents are
+// stored and retrievable from SQLite.
+export const USE_MOCK_SOS = false;

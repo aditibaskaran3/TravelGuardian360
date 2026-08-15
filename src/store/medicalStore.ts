@@ -4,7 +4,9 @@
  */
 import { create } from './createStore';
 import { storage, StorageKeys } from '../services/storage';
+import { apiClient, getApiErrorMessage } from '../api/client';
 import type { MedicalID, BloodGroup } from '../features/medical/types';
+import { useAuthStore } from './authStore';
 
 const DEFAULT_MEDICAL_ID: MedicalID = {
   bloodGroup: null,
@@ -41,6 +43,36 @@ export const useMedicalStore = create<MedicalState>((set, get) => ({
   loaded: false,
 
   async hydrate() {
+    const token = useAuthStore.getState().token;
+    if (token) {
+      try {
+        const { data } = await apiClient.get('/medical');
+        if (data) {
+          set({
+            data: {
+              bloodGroup: data.bloodGroup ?? null,
+              allergies: Array.isArray(data.allergies) ? data.allergies : [],
+              medicalConditions: Array.isArray(data.medicalConditions) ? data.medicalConditions : [],
+              medications: Array.isArray(data.medications) ? data.medications : [],
+              updatedAt: data.updatedAt || new Date().toISOString(),
+            },
+            loaded: true,
+          });
+          await storage.setItem(StorageKeys.medicalID, {
+            bloodGroup: data.bloodGroup ?? null,
+            allergies: Array.isArray(data.allergies) ? data.allergies : [],
+            medicalConditions: Array.isArray(data.medicalConditions) ? data.medicalConditions : [],
+            medications: Array.isArray(data.medications) ? data.medications : [],
+            updatedAt: data.updatedAt || new Date().toISOString(),
+          });
+          return;
+        }
+      } catch (error) {
+        // Fall back to local storage when the backend is unavailable.
+        console.warn(getApiErrorMessage(error, 'Unable to load medical ID from server.'));
+      }
+    }
+
     const data = await storage.getItem<MedicalID>(StorageKeys.medicalID);
     set({ data: data || DEFAULT_MEDICAL_ID, loaded: true });
   },
@@ -99,6 +131,33 @@ export const useMedicalStore = create<MedicalState>((set, get) => ({
   },
 
   async save() {
-    await persistData(get().data);
+    const data = get().data;
+    await persistData(data);
+
+    const token = useAuthStore.getState().token;
+    if (!token) {
+      return;
+    }
+
+    try {
+      const { data: serverData } = await apiClient.post('/medical', {
+        bloodGroup: data.bloodGroup,
+        allergies: data.allergies,
+        medicalConditions: data.medicalConditions,
+        medications: data.medications,
+      });
+
+      set({
+        data: {
+          bloodGroup: serverData.bloodGroup ?? null,
+          allergies: Array.isArray(serverData.allergies) ? serverData.allergies : [],
+          medicalConditions: Array.isArray(serverData.medicalConditions) ? serverData.medicalConditions : [],
+          medications: Array.isArray(serverData.medications) ? serverData.medications : [],
+          updatedAt: serverData.updatedAt || new Date().toISOString(),
+        },
+      });
+    } catch (error) {
+      console.warn(getApiErrorMessage(error, 'Unable to save medical ID to server.'));
+    }
   },
 }));

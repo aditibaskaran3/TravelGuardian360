@@ -9,10 +9,22 @@ import type { ContactsService } from './contactsService';
 export const realContactsService: ContactsService = {
   async list(): Promise<EmergencyContactRecord[]> {
     const { data } = await apiClient.get<EmergencyContactRecord[]>('/contacts');
-    return data;
+    return data.map((c: any) => ({
+      id: c.id,
+      name: c.name,
+      phone: c.phone,
+      relationship: c.relationship,
+      isPrimary: Boolean(c.isPrimary),
+    }));
   },
 
   async save(contacts: EmergencyContactRecord[]): Promise<void> {
-    await apiClient.put('/contacts', contacts);
+    await apiClient.put('/contacts', contacts.map((c) => ({
+      id: c.id,
+      name: c.name,
+      phone: c.phone,
+      relationship: c.relationship,
+      isPrimary: c.isPrimary,
+    })));
   },
 };
