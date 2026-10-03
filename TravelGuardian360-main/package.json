@@ -1,0 +1,45 @@
+{
+  "name": "TravelGuardian360",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "web": "vite",
+    "build:web": "vite build",
+    "backend": "cd backend && python -m uvicorn app.main:app --reload --port 8000",
+    "start": "react-native start",
+    "android": "react-native run-android",
+    "test:backend": "cd backend && python -m pytest tests -q"
+  },
+  "dependencies": {
+    "@react-native-async-storage/async-storage": "^2.2.0",
+    "@react-native-community/geolocation": "^3.4.0",
+    "@react-navigation/bottom-tabs": "^7.20.0",
+    "@react-navigation/native": "^7.5.0",
+    "@react-navigation/native-stack": "^7.20.0",
+    "feather-icons": "^4.29.2",
+    "leaflet": "^1.9.4",
+    "qrcode": "^1.5.4",
+    "react": "19.1.4",
+    "react-dom": "^19.1.4",
+    "react-native": "0.81.6",
+    "react-native-safe-area-context": "^5.5.2",
+    "react-native-screens": "^4.16.0",
+    "react-native-svg": "^15.12.0",
+    "react-native-web": "^0.21.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.25.2",
+    "@babel/preset-env": "^7.25.3",
+    "@babel/runtime": "^7.25.0",
+    "@react-native-community/cli": "20.0.0",
+    "@react-native-community/cli-platform-android": "20.0.0",
+    "@react-native-community/cli-platform-ios": "20.0.0",
+    "@react-native/babel-preset": "0.81.6",
+    "@react-native/metro-config": "0.81.6",
+    "@vitejs/plugin-react": "^4.3.4",
+    "vite": "^6.0.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

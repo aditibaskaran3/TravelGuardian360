@@ -1,0 +1,20 @@
+{
+ "  ·  Primary": "·  Primario",
+ " - open SOS": "- abrir SOS",
+ "\"{title}\" will be removed from every recipient's inbox. This cannot be undone.": "\"{title}\" se eliminará de la bandeja de entrada de todos los destinatarios. Esto no se puede deshacer.",
+ "(record hash {hash}, {state})": "(registrar hash {hash}, {state})",
+ "1 active emergency request needs attention": "1 solicitud de emergencia activa necesita atención",
+ "1 day left": "1 día restante",
+ "1 tourist selected": "1 turista seleccionado",
+ "1 verification request waiting": "1 solicitud de verificación en espera",
+ "AM": "SOY",
+ "Access log": "Registro de acceso",
+ "Accommodation": "Alojamiento",
+ "Account": "Cuenta",
+ "Account Settings": "Configuraciones de la cuenta",
+ "Account created": "Cuenta creada",
+ "Accuracy": "Exactitud",
+ "Acknowledge": "Reconocer",
+ "Acknowledged": "Admitido",
+ "Actions taken, responders contacted...": "Acciones tomadas, personal de respuesta contactado..."
+}
