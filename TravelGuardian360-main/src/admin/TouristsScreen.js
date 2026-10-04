@@ -78,7 +78,7 @@ export default function TouristsScreen() {
 
   const columns = [
     {
-      key: 'select', title: '', width: 44,
+      key: 'select', title: '', width: 36,
       render: (row) => (row.verification_status !== 'verified' && row.verification_requested ? (
         <Pressable onPress={() => toggle(row.user_id)} accessibilityLabel={t('Select {name}', { name: row.full_name })} style={[styles.box, selected.includes(row.user_id) && styles.boxOn]}>
           {selected.includes(row.user_id) ? <Icon name="check" size={14} color="#fff" /> : null}
@@ -86,7 +86,7 @@ export default function TouristsScreen() {
       ) : null),
     },
     {
-      key: 'tid', title: t('Tourist ID'), width: 150,
+      key: 'tid', title: t('Tourist ID'), width: 128,
       render: (row) => (
         <View>
           <Cell strong>{row.tourist_id}</Cell>
@@ -95,7 +95,7 @@ export default function TouristsScreen() {
       ),
     },
     {
-      key: 'name', title: t('Tourist'), flex: 1.4,
+      key: 'name', title: t('Tourist'), flex: 1.15,
       render: (row) => (
         <View>
           <Cell strong>{row.full_name}</Cell>
@@ -105,7 +105,7 @@ export default function TouristsScreen() {
       ),
     },
     {
-      key: 'trip', title: t('Trip'), flex: 1.2,
+      key: 'trip', title: t('Trip'), flex: 1,
       render: (row) =>
         row.trip ? (
           <View>
@@ -116,7 +116,7 @@ export default function TouristsScreen() {
         ) : null,
     },
     {
-      key: 'contacts', title: t('Emergency contacts'), flex: 1.3,
+      key: 'contacts', title: t('Emergency contacts'), flex: 1.1,
       render: (row) =>
         row.emergency_contacts?.length ? (
           <View>
@@ -130,11 +130,11 @@ export default function TouristsScreen() {
         ) : null,
     },
     {
-      key: 'account', title: t('Account'), width: 110,
+      key: 'account', title: t('Account'), width: 92,
       render: (row) => <StatusBadge status={row.is_active ? 'account_active' : 'inactive'} />,
     },
     {
-      key: 'verification', title: t('Verification'), flex: 1.2,
+      key: 'verification', title: t('Verification'), flex: 1,
       render: (row) => (
         <View style={styles.verifyCol}>
           <StatusBadge status={row.verification_status} />
@@ -150,7 +150,7 @@ export default function TouristsScreen() {
       ),
     },
     {
-      key: 'actions', title: t('Actions'), width: 150,
+      key: 'actions', title: t('Actions'), width: 118,
       render: (row) => (
         <RowActions>
           {row.verification_status === 'verified' ? (
