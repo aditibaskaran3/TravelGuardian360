@@ -59,8 +59,8 @@ export default function BottomNavigator() {
     <Tab.Navigator tabBar={(props) => <TabBar {...props} />} screenOptions={{ headerShown: false }}>
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Trip" component={TripScreen} />
-      <Tab.Screen name="Location" component={LocationScreen} />
       <Tab.Screen name="SOS" component={SOSScreen} />
+      <Tab.Screen name="Location" component={LocationScreen} />
       <Tab.Screen name="More" component={MoreScreen} />
     </Tab.Navigator>
   );

@@ -9,6 +9,7 @@ import { LogoMark } from '../components/Logo';
 import { LocationProvider } from '../context/LocationContext';
 import { useAuth } from '../context/AuthContext';
 import BottomNavigator from './BottomNavigator';
+import DocumentsScreen from '../screens/DocumentsScreen';
 import FamilyScreen from '../screens/FamilyScreen';
 import EmergencyContactsScreen from '../screens/EmergencyContactsScreen';
 import InfoScreen from '../screens/InfoScreen';
@@ -43,6 +44,7 @@ const linking = {
       Notifications: 'notifications',
       EmergencyContacts: 'contacts',
       Family: 'family',
+      Documents: 'documents',
       MedicalID: 'medical-id',
       TouristID: 'tourist-id',
       SafetyZones: 'safety-zones',
@@ -69,7 +71,12 @@ export default function AppNavigator() {
   }
 
   return (
-    <NavigationContainer theme={theme} linking={linking} key={user ? 'in' : 'out'}>
+    <NavigationContainer
+      theme={theme}
+      linking={linking}
+      documentTitle={{ formatter: () => 'TravelGuardian360' }}
+      key={user ? 'in' : 'out'}
+    >
       {user ? (
         <LocationProvider>
           <Stack.Navigator screenOptions={screenOptions}>
@@ -77,6 +84,7 @@ export default function AppNavigator() {
             <Stack.Screen name="Notifications" component={NotificationsScreen} />
             <Stack.Screen name="EmergencyContacts" component={EmergencyContactsScreen} />
             <Stack.Screen name="Family" component={FamilyScreen} />
+            <Stack.Screen name="Documents" component={DocumentsScreen} />
             <Stack.Screen name="MedicalID" component={MedicalIDScreen} />
             <Stack.Screen name="TouristID" component={TouristIDScreen} />
             <Stack.Screen name="SafetyZones" component={SafetyZonesScreen} />

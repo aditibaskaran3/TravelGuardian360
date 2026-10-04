@@ -28,6 +28,7 @@ class User(Base):
     locations = relationship("Location", back_populates="user", cascade="all, delete-orphan")
     contacts = relationship("EmergencyContact", back_populates="user", cascade="all, delete-orphan")
     family_members = relationship("FamilyMember", back_populates="user", cascade="all, delete-orphan")
+    documents = relationship("TravelDocument", back_populates="user", cascade="all, delete-orphan")
     medical = relationship("MedicalInfo", back_populates="user", uselist=False, cascade="all, delete-orphan")
     sos_requests = relationship(
         "SOSRequest", back_populates="user", cascade="all, delete-orphan", foreign_keys="SOSRequest.user_id"

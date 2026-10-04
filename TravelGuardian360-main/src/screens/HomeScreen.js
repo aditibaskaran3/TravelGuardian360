@@ -96,7 +96,10 @@ export default function HomeScreen({ navigation }) {
             <Text style={styles.hello}>{greeting()}</Text>
             <Text style={styles.name} numberOfLines={1}>{firstName(user.full_name)}</Text>
           </View>
-          <IconButton icon="bell" label={t('Notifications')} badge={unread.data ? unread.data.count : 0} onPress={() => navigation.navigate('Notifications')} />
+          <View style={styles.headerActions}>
+            <IconButton icon="bell" label={t('Notifications')} badge={unread.data ? unread.data.count : 0} onPress={() => navigation.navigate('Notifications')} />
+            <IconButton icon="settings" label={t('Settings')} onPress={() => navigation.navigate('Settings')} />
+          </View>
         </View>
       }
     >
@@ -270,6 +273,7 @@ export default function HomeScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   header: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 20, paddingTop: 16, paddingBottom: 4 },
+  headerActions: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   greeting: { flex: 1 },
   hello: { color: colors.muted, fontSize: 13 },
   name: { color: colors.text, fontSize: 24, fontWeight: '800', letterSpacing: -0.4 },

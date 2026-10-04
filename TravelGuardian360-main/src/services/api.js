@@ -40,8 +40,10 @@ function query(params) {
 async function request(method, path, { body, params, role = 'user', auth = true } = {}) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
+  const isFormData = typeof FormData !== 'undefined' && body instanceof FormData;
   const headers = { Accept: 'application/json', 'X-Lang': language };
-  if (body !== undefined) headers['Content-Type'] = 'application/json';
+  // FormData must keep its browser-generated multipart boundary, so we never set Content-Type ourselves.
+  if (body !== undefined && !isFormData) headers['Content-Type'] = 'application/json';
   if (auth && tokens[role]) headers.Authorization = `Bearer ${tokens[role]}`;
 
   let response;
@@ -49,7 +51,7 @@ async function request(method, path, { body, params, role = 'user', auth = true 
     response = await fetch(`${API_URL}${path}${query(params)}`, {
       method,
       headers,
-      body: body !== undefined ? JSON.stringify(body) : undefined,
+      body: body !== undefined ? (isFormData ? body : JSON.stringify(body)) : undefined,
       signal: controller.signal,
     });
   } catch (err) {
@@ -79,9 +81,24 @@ async function request(method, path, { body, params, role = 'user', auth = true 
   return data;
 }
 
+// Fetches a protected binary resource (e.g. an uploaded document file) as a Blob, attaching the
+// same auth header as a normal request. Needed because <a href> / window.open cannot send headers.
+async function getBlob(path, { role = 'user' } = {}) {
+  const headers = {};
+  if (tokens[role]) headers.Authorization = `Bearer ${tokens[role]}`;
+  const response = await fetch(`${API_URL}${path}`, { headers });
+  if (!response.ok) {
+    let detail = null;
+    try { detail = (await response.json()).detail; } catch { /* ignore */ }
+    throw new ApiError(typeof detail === 'string' ? detail : t('Something went wrong. Please try again.'), response.status);
+  }
+  return response.blob();
+}
+
 export const api = {
   get: (path, options) => request('GET', path, options),
   post: (path, body, options) => request('POST', path, { ...options, body: body ?? {} }),
   put: (path, body, options) => request('PUT', path, { ...options, body: body ?? {} }),
   del: (path, options) => request('DELETE', path, options),
+  getBlob,
 };

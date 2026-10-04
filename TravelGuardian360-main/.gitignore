@@ -76,3 +76,6 @@ yarn-error.log
 
 # Local secrets
 backend/.env
+
+# Uploaded document files (dev storage)
+backend/uploads/

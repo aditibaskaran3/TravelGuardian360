@@ -32,6 +32,24 @@ export const familyApi = {
   remove: (id) => api.del(`/family/${id}`),
 };
 
+function documentFormData({ family_member_id, document_name, document_number, file, removeFile }) {
+  const form = new FormData();
+  if (family_member_id !== null && family_member_id !== undefined) form.append('family_member_id', String(family_member_id));
+  form.append('document_name', document_name || '');
+  form.append('document_number', document_number || '');
+  if (file) form.append('file', file);
+  if (removeFile) form.append('remove_file', 'true');
+  return form;
+}
+
+export const documentsApi = {
+  list: () => api.get('/documents'),
+  create: (data) => api.post('/documents', documentFormData(data)),
+  update: (id, data) => api.put(`/documents/${id}`, documentFormData(data)),
+  remove: (id) => api.del(`/documents/${id}`),
+  fetchFile: (id) => api.getBlob(`/documents/${id}/file`),
+};
+
 export const medicalApi = {
   get: () => api.get('/medical'),
   save: (data) => api.put('/medical', data),

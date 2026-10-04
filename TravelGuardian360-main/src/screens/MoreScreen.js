@@ -21,6 +21,7 @@ const EXPLORE = [
 const SAFETY = [
   { icon: 'users', label: t('Emergency Contacts'), to: ['EmergencyContacts'] },
   { icon: 'smile', label: t('Family Members'), to: ['Family'] },
+  { icon: 'file-text', label: t('Documents'), to: ['Documents'] },
   { icon: 'heart', label: t('Medical ID'), to: ['MedicalID'] },
   { icon: 'credit-card', label: t('Tourist ID'), to: ['TouristID'] },
   { icon: 'shield', label: t('Safety Zones'), to: ['SafetyZones'] },
@@ -64,15 +65,6 @@ export default function MoreScreen({ navigation }) {
           ))}
         </View>
       </Section>
-
-      <Card onPress={() => navigation.navigate('Settings')} style={styles.settings}>
-        <View style={styles.tileIcon}><Icon name="settings" size={20} color={colors.accent} /></View>
-        <View style={{ flex: 1 }}>
-          <Text style={styles.tileLabel}>{t('Settings')}</Text>
-          <Text style={styles.muted}>{t('Account, notifications, privacy, location')}</Text>
-        </View>
-        <Icon name="chevron-right" size={20} color={colors.muted} />
-      </Card>
     </ScreenContainer>
   );
 }

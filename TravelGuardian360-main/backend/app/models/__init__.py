@@ -1,4 +1,5 @@
 from app.models.audit import AuditLog
+from app.models.document import TravelDocument
 from app.models.emergency_contact import EmergencyContact
 from app.models.family_member import FamilyMember
 from app.models.location import Location
@@ -15,6 +16,6 @@ from app.models.weather import WeatherInfo
 
 __all__ = [
     "AuditLog", "EmergencyContact", "FamilyMember", "Location", "MedicalInfo", "Notification",
-    "NotificationRecipient", "SafetyZone", "SOSRequest", "TouristID", "TravelInfo",
+    "NotificationRecipient", "SafetyZone", "SOSRequest", "TouristID", "TravelDocument", "TravelInfo",
     "Translation", "Trip", "User", "WeatherInfo",
 ]

@@ -14,7 +14,7 @@ from app.routes import (
     admin, auth, emergency_contacts, locations, medical, notifications, safety_zones, sos,
     tourist_id, travel_info, trips, users, weather,
 )
-from app.routes import family
+from app.routes import documents, family
 
 
 @asynccontextmanager
@@ -32,7 +32,7 @@ app.add_middleware(
 
 for module in (
     auth, users, trips, locations, tourist_id, emergency_contacts, medical, sos,
-    safety_zones, weather, notifications, travel_info, family, admin,
+    safety_zones, weather, notifications, travel_info, family, documents, admin,
 ):
     app.include_router(module.router)
 
